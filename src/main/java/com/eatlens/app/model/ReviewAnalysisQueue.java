@@ -34,9 +34,3 @@ public class ReviewAnalysisQueue extends BaseEntity {
     private LocalDateTime processedAt;
 }
 
-enum QueueStatus {
-    PENDING,
-    PROCESSING,
-    COMPLETED,
-    FAILED
-}

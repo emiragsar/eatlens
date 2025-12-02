@@ -54,9 +54,3 @@ public class AIAnalysisSummary extends BaseEntity {
     private Integer totalAnalyzedReviews;
 }
 
-enum SentimentType {
-    POSITIVE,
-    NEGATIVE,
-    NEUTRAL,
-    MIXED
-}

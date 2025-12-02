@@ -47,9 +47,3 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<Review> reviews;
 }
-
-enum UserRole {
-    CUSTOMER,
-    RESTAURANT_OWNER,
-    ADMIN
-}
