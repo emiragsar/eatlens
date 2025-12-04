@@ -2,15 +2,18 @@ package com.eatlens.app.service.impl;
 
 
 import com.eatlens.app.dto.reviewdto.ReviewCreateRequest;
+import com.eatlens.app.dto.reviewdto.ReviewResponse;
 import com.eatlens.app.exception.BusinessException;
 import com.eatlens.app.exception.ResourceNotFoundException;
 import com.eatlens.app.mapper.EntityMapper;
 import com.eatlens.app.model.*;
-import com.eatlens.app.repository.*;
-import com.eatlens.app.service.ReviewService;
+import com.eatlens.app.repository.RestaurantRepository;
+import com.eatlens.app.repository.ReviewAnalysisQueueRepository;
+import com.eatlens.app.repository.ReviewRepository;
+import com.eatlens.app.repository.UserRepository;
 import com.eatlens.app.service.RestaurantService;
+import com.eatlens.app.service.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -18,11 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.eatlens.app.dto.reviewdto.ReviewResponse;
 
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
@@ -35,6 +36,18 @@ public class ReviewServiceImpl implements ReviewService {
     private final EntityMapper mapper;
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher eventPublisher;
+
+    public ReviewServiceImpl(ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, UserRepository userRepository, ReviewAnalysisQueueRepository queueRepository,
+                             RestaurantService restaurantService, EntityMapper mapper, ObjectMapper objectMapper, ApplicationEventPublisher eventPublisher) {
+        this.reviewRepository = reviewRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
+        this.queueRepository = queueRepository;
+        this.restaurantService = restaurantService;
+        this.mapper = mapper;
+        this.objectMapper = objectMapper;
+        this.eventPublisher = eventPublisher;
+    }
 
     @Override
     public ReviewResponse createReview(ReviewCreateRequest request, Long customerId) {

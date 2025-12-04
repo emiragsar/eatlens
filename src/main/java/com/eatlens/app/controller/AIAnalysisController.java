@@ -4,18 +4,20 @@ package com.eatlens.app.controller;
 import com.eatlens.app.dto.aianalysisdto.AIAnalysisResponse;
 import com.eatlens.app.dto.userdto.BaseResponse;
 import com.eatlens.app.service.AIAnalysisService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ai-analysis")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AIAnalysisController {
 
     private final AIAnalysisService aiAnalysisService;
+
+    public AIAnalysisController(AIAnalysisService aiAnalysisService) {
+        this.aiAnalysisService = aiAnalysisService;
+    }
 
     @GetMapping("/restaurants/{restaurantId}")
     public ResponseEntity<AIAnalysisResponse> getRestaurantAnalysis(

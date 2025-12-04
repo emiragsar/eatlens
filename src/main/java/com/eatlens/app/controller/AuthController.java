@@ -9,7 +9,6 @@ import com.eatlens.app.security.CustomUserDetails;
 import com.eatlens.app.security.JwtTokenProvider;
 import com.eatlens.app.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,13 +19,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtTokenProvider tokenProvider;
+
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtTokenProvider tokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.tokenProvider = tokenProvider;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody UserLoginRequest loginRequest) {

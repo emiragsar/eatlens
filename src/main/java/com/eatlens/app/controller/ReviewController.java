@@ -4,28 +4,35 @@ package com.eatlens.app.controller;
 import com.eatlens.app.dto.reviewdto.ReviewCreateRequest;
 import com.eatlens.app.dto.reviewdto.ReviewResponse;
 import com.eatlens.app.dto.userdto.BaseResponse;
+import com.eatlens.app.security.CustomUserDetails;
 import com.eatlens.app.service.ReviewService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/reviews")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ReviewResponse> createReview(
-            @RequestHeader("userId") Long userId,
-            @Valid @RequestBody ReviewCreateRequest request) {
+            @Valid @RequestBody ReviewCreateRequest request,
+            Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
         ReviewResponse response = reviewService.createReview(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

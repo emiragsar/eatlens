@@ -1,7 +1,6 @@
 package com.eatlens.app.service.impl;
 
 
-
 import com.eatlens.app.dto.aianalysisdto.AIAnalysisResponse;
 import com.eatlens.app.exception.ResourceNotFoundException;
 import com.eatlens.app.model.*;
@@ -12,7 +11,6 @@ import com.eatlens.app.repository.ReviewRepository;
 import com.eatlens.app.service.AIAnalysisService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -24,14 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-
-
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class AIAnalysisServiceImpl implements AIAnalysisService {
@@ -42,6 +39,18 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
     private final RestaurantRepository restaurantRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+
+    public AIAnalysisServiceImpl(AIAnalysisSummaryRepository analysisSummaryRepository, ReviewAnalysisQueueRepository queueRepository, ReviewRepository reviewRepository,
+                                 RestaurantRepository restaurantRepository, RestTemplate restTemplate, ObjectMapper objectMapper)
+        {
+        this.analysisSummaryRepository = analysisSummaryRepository;
+        this.queueRepository = queueRepository;
+        this.reviewRepository = reviewRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+        }
+
 
     @Value("${ai.service.url:http://localhost:5000}")
     private String aiServiceUrl;

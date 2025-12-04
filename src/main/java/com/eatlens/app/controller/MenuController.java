@@ -2,28 +2,30 @@ package com.eatlens.app.controller;
 
 
 import com.eatlens.app.dto.categorydto.CategoryCreateRequest;
+import com.eatlens.app.dto.categorydto.CategoryResponse;
 import com.eatlens.app.dto.menuitemdto.MenuItemCreateRequest;
+import com.eatlens.app.dto.menuitemdto.MenuItemResponse;
 import com.eatlens.app.dto.menuitemdto.MenuItemUpdateRequest;
 import com.eatlens.app.dto.userdto.BaseResponse;
 import com.eatlens.app.service.MenuService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import com.eatlens.app.dto.categorydto.CategoryResponse;
-import com.eatlens.app.dto.menuitemdto.MenuItemResponse;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/menu")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class MenuController {
 
     private final MenuService menuService;
+
+    public MenuController(MenuService menuService) {
+        this.menuService = menuService;
+    }
 
     // Category Endpoints
     @PostMapping("/restaurants/{restaurantId}/categories")

@@ -1,7 +1,6 @@
 package com.eatlens.app.service.impl;
 
 
-
 import com.eatlens.app.dto.userdto.UserLoginRequest;
 import com.eatlens.app.dto.userdto.UserRegisterRequest;
 import com.eatlens.app.dto.userdto.UserResponse;
@@ -12,7 +11,6 @@ import com.eatlens.app.mapper.EntityMapper;
 import com.eatlens.app.model.User;
 import com.eatlens.app.repository.UserRepository;
 import com.eatlens.app.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@RequiredArgsConstructor
+
 @Slf4j
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -28,6 +26,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EntityMapper mapper;
     private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, EntityMapper mapper, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
+
+    }
 
     @Override
     public UserResponse register(UserRegisterRequest request) {

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # SAĞLIK KONTROLÜ: MySQL'in gerçekten bağlantı kabul etmeye hazır olup olmadığını kontrol eder
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build: .
+    container_name: spring-app
+    # Restart policy: Veritabanı koparsa uygulama da yeniden denesin
+    restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy # MySQL 'healthy' olana kadar Spring Boot'u başlatma
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Konteynerin bilgisayarına (localhost) erişmesini sağlar
+    environment:
+      # Docker içinde veritabanı URL'si (servis adı 'mysql' olduğu için host kısmı 'mysql' olur)
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      # AI Servisi için URL override ediyoruz.
+      # Localde çalışan (Docker dışında) bir servise erişmek için host.docker.internal kullanılır.
+      AI_SERVICE_URL: http://host.docker.internal:5000
+
+volumes:
+  mysql_data:

@@ -1,12 +1,12 @@
 package com.eatlens.app.controller;
 
 
-import com.eatlens.app.dto.userdto.*;
+import com.eatlens.app.dto.userdto.BaseResponse;
+import com.eatlens.app.dto.userdto.UserResponse;
+import com.eatlens.app.dto.userdto.UserUpdateRequest;
 import com.eatlens.app.security.CustomUserDetails;
 import com.eatlens.app.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @GetMapping("/profile")

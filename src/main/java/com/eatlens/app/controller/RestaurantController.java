@@ -3,29 +3,31 @@ package com.eatlens.app.controller;
 
 import com.eatlens.app.dto.restaurantdto.RestaurantCreateRequest;
 import com.eatlens.app.dto.restaurantdto.RestaurantListResponse;
+import com.eatlens.app.dto.restaurantdto.RestaurantResponse;
 import com.eatlens.app.dto.restaurantdto.RestaurantUpdateRequest;
 import com.eatlens.app.dto.searchdto.NearbyRestaurantRequest;
 import com.eatlens.app.dto.searchdto.RestaurantSearchRequest;
 import com.eatlens.app.dto.userdto.BaseResponse;
 import com.eatlens.app.service.RestaurantService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import com.eatlens.app.dto.restaurantdto.RestaurantResponse;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+
+    public RestaurantController(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
+    }
 
     @PostMapping
     @PreAuthorize("hasRole('RESTAURANT_OWNER')")

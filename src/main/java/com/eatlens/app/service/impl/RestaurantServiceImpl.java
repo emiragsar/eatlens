@@ -15,7 +15,6 @@ import com.eatlens.app.repository.RestaurantRepository;
 import com.eatlens.app.repository.ReviewRepository;
 import com.eatlens.app.repository.UserRepository;
 import com.eatlens.app.service.RestaurantService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class RestaurantServiceImpl implements RestaurantService {
@@ -37,6 +35,13 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final EntityMapper mapper;
+
+    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, UserRepository userRepository, ReviewRepository reviewRepository, EntityMapper mapper) {
+        this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public RestaurantResponse createRestaurant(RestaurantCreateRequest request, Long ownerId) {

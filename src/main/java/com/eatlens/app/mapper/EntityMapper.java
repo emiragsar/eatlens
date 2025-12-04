@@ -14,18 +14,18 @@ import com.eatlens.app.dto.userdto.UserResponse;
 import com.eatlens.app.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class EntityMapper {
     private final ObjectMapper objectMapper;
+
+    public EntityMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
 
     // User Mappings

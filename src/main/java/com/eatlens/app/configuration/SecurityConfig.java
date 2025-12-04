@@ -3,7 +3,6 @@ package com.eatlens.app.configuration;
 
 import com.eatlens.app.security.JwtAuthenticationEntryPoint;
 import com.eatlens.app.security.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,22 +20,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
 
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -64,107 +62,50 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Auth endpoints - PUBLIC (Düzeltildi!)
-                        .requestMatchers(
-                                "/api/auth/register",     // Doğru path
-                                "/api/auth/login"         // Doğru path
-                        ).permitAll()
-
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         // User endpoints - PUBLIC
                         .requestMatchers("/api/users/check-email").permitAll()
-
                         // Health check - PUBLIC
                         .requestMatchers("/api/health").permitAll()
-
                         // Restaurant endpoints - PUBLIC (GET operations)
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/restaurants",
-                                "/api/restaurants/*"
-                        ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/restaurants/search",
-                                "/api/restaurants/nearby"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants", "/api/restaurants/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/restaurants/search", "/api/restaurants/nearby").permitAll()
 
                         // Menu endpoints - PUBLIC (GET only)
-                        .requestMatchers(
-                                HttpMethod.GET,
+                        .requestMatchers(HttpMethod.GET,
                                 "/api/menu/restaurants/*/items",
                                 "/api/menu/restaurants/*/categories",
                                 "/api/menu/categories/*/items",
                                 "/api/menu/items/*",
-                                "/api/menu/restaurants/*/popular"
-                        ).permitAll()
+                                "/api/menu/restaurants/*/popular").permitAll()
 
                         // Review endpoints - PUBLIC (GET only)
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/reviews/restaurants/*"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/restaurants/*").permitAll()
 
                         // AI Analysis - PUBLIC (GET only)
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/ai-analysis/restaurants/*"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/ai-analysis/restaurants/*").permitAll()
 
                         // Restaurant owner endpoints - AUTHENTICATED
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/restaurants"
-                        ).hasRole("RESTAURANT_OWNER")
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                "/api/restaurants/*"
-                        ).hasRole("RESTAURANT_OWNER")
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/restaurants/*"
-                        ).hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.POST, "/api/restaurants").hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.PUT, "/api/restaurants/*").hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/restaurants/*").hasRole("RESTAURANT_OWNER")
                         .requestMatchers("/api/restaurants/my-restaurants").hasRole("RESTAURANT_OWNER")
 
                         // Menu management - RESTAURANT_OWNER only
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/menu/**"
-                        ).hasRole("RESTAURANT_OWNER")
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                "/api/menu/**"
-                        ).hasRole("RESTAURANT_OWNER")
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/menu/**"
-                        ).hasRole("RESTAURANT_OWNER")
-                        .requestMatchers(
-                                HttpMethod.PATCH,
-                                "/api/menu/**"
-                        ).hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.POST, "/api/menu/**").hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.PUT, "/api/menu/**").hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/menu/**").hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/menu/**").hasRole("RESTAURANT_OWNER")
 
                         // Review endpoints - CUSTOMER
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/reviews"
-                        ).hasRole("CUSTOMER")
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/reviews/*"
-                        ).hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST, "/api/reviews").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/reviews/*").hasRole("CUSTOMER")
 
                         // Review owner response - RESTAURANT_OWNER
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/reviews/*/owner-response"
-                        ).hasRole("RESTAURANT_OWNER")
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/*/owner-response").hasRole("RESTAURANT_OWNER")
 
                         // User profile endpoints - AUTHENTICATED
-                        .requestMatchers(
-                                "/api/users/profile",
-                                "/api/users/change-password",
-                                "/api/users/account"
-                        ).authenticated()
+                        .requestMatchers("/api/users/profile", "/api/users/change-password", "/api/users/account").authenticated()
 
                         // My reviews - AUTHENTICATED
                         .requestMatchers("/api/reviews/my-reviews").authenticated()

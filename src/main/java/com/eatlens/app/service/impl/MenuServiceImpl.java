@@ -5,16 +5,16 @@ import com.eatlens.app.dto.categorydto.CategoryResponse;
 import com.eatlens.app.dto.menuitemdto.MenuItemCreateRequest;
 import com.eatlens.app.dto.menuitemdto.MenuItemResponse;
 import com.eatlens.app.dto.menuitemdto.MenuItemUpdateRequest;
-
 import com.eatlens.app.exception.BusinessException;
 import com.eatlens.app.exception.ResourceNotFoundException;
 import com.eatlens.app.mapper.EntityMapper;
 import com.eatlens.app.model.Category;
 import com.eatlens.app.model.MenuItem;
 import com.eatlens.app.model.Restaurant;
-import com.eatlens.app.repository.*;
+import com.eatlens.app.repository.CategoryRepository;
+import com.eatlens.app.repository.MenuItemRepository;
+import com.eatlens.app.repository.RestaurantRepository;
 import com.eatlens.app.service.MenuService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class MenuServiceImpl implements MenuService {
@@ -32,6 +31,13 @@ public class MenuServiceImpl implements MenuService {
     private final MenuItemRepository menuItemRepository;
     private final RestaurantRepository restaurantRepository;
     private final EntityMapper mapper;
+
+    public MenuServiceImpl(CategoryRepository categoryRepository, MenuItemRepository menuItemRepository, RestaurantRepository restaurantRepository, EntityMapper mapper) {
+        this.categoryRepository = categoryRepository;
+        this.menuItemRepository = menuItemRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public CategoryResponse createCategory(Long restaurantId, CategoryCreateRequest request) {
